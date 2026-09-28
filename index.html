@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#14211b">
+  <title>Prueba Macro Studio</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+    :root {
+      color-scheme: dark;
+      --ink: #14211b;
+      --ink-soft: #1b2b23;
+      --ink-raised: #24362c;
+      --paper: #edf3e9;
+      --muted: #aab9ad;
+      --line: rgba(232, 244, 232, .15);
+      --lime: #c5f36a;
+      --orange: #ff906d;
+      --mint: #81d7b2;
+      --sans: 'DM Sans', 'Segoe UI', sans-serif;
+      --display: 'Space Grotesk', 'Segoe UI', sans-serif;
+      --mono: 'DM Mono', Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--ink); color: var(--paper); font: 15px/1.5 var(--sans); }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; }
+    .page { max-width: 1320px; margin: auto; padding: 0 36px 56px; }
+    .topbar { height: 78px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
+    .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; }
+    .brand-mark { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 8px; background: var(--lime); color: var(--ink); font: 700 17px var(--display); transform: rotate(-5deg); }
+    .brand-name { font: 700 17px var(--display); }
+    .top-link { color: var(--lime); font-weight: 700; text-decoration: none; }
+    .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 17px; margin-top: 24px; }
+    .store-cta { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 44px; padding: 0 16px; border-radius: 6px; background: var(--lime); color: var(--ink); font-size: 13px; font-weight: 700; text-decoration: none; transition: background .18s ease, transform .18s ease; }
+    .store-cta:hover { background: #d4fa8b; transform: translateY(-1px); }
+    .demo-link { color: var(--muted); font-size: 13px; text-underline-offset: 4px; }
+    .hero { display: grid; grid-template-columns: minmax(0, .94fr) minmax(400px, 1.06fr); gap: 64px; align-items: center; padding: 58px 0 54px; }
+    .eyebrow { display: flex; align-items: center; gap: 9px; color: var(--lime); text-transform: uppercase; font: 500 11px var(--mono); letter-spacing: .08em; }
+    .eyebrow::before { content: ''; width: 20px; height: 1px; background: currentColor; }
+    h1 { max-width: 580px; margin: 19px 0 17px; font: 600 54px/1.03 var(--display); letter-spacing: -.035em; }
+    h1 span { color: var(--lime); }
+    .hero-copy { max-width: 505px; margin: 0; color: #bfcbc0; font-size: 17px; }
+    .hero-note { display: flex; gap: 10px; align-items: flex-start; margin-top: 25px; color: var(--muted); font-size: 13px; }
+    .note-dot { flex: 0 0 8px; width: 8px; height: 8px; margin-top: 6px; border-radius: 50%; background: var(--orange); }
+    .video-frame { position: relative; overflow: hidden; border: 1px solid var(--line); border-radius: 8px; background: #0b100d; }
+    .video-frame video { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+    .video-still { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: contain; background: #0b100d; }
+    .video-still[hidden] { display: none; }
+    .video-caption { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 15px; color: var(--muted); font: 12px var(--mono); }
+    .video-caption strong { color: var(--paper); font-family: var(--sans); font-weight: 600; }
+    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin: 0 0 17px; }
+    .section-heading h2 { margin: 0; font: 600 25px var(--display); }
+    .section-heading p { margin: 5px 0 0; color: var(--muted); font-size: 13px; }
+    .demo-label { display: inline-flex; gap: 8px; align-items: center; color: var(--lime); font: 11px var(--mono); text-transform: uppercase; }
+    .demo-label::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 12px rgba(197, 243, 106, .55); }
+    .simulator { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #101a15; }
+    .sim-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 16px; border-bottom: 1px solid var(--line); background: #19271f; }
+    .sim-title { display: flex; align-items: center; gap: 11px; font: 600 14px var(--display); }
+    .window-dots { display: flex; gap: 5px; }
+    .window-dots i { width: 7px; height: 7px; border-radius: 50%; background: #74857a; }
+    .window-dots i:first-child { background: var(--orange); }
+    .window-dots i:nth-child(2) { background: var(--lime); }
+    .toolbar-actions { display: flex; flex-wrap: wrap; gap: 7px; }
+    .control { min-height: 36px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 6px; background: transparent; color: var(--paper); font-size: 12px; font-weight: 600; transition: background .18s ease, border-color .18s ease, transform .18s ease; }
+    .control:hover { transform: translateY(-1px); border-color: rgba(232, 244, 232, .38); }
+    .control:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible { outline: 2px solid var(--lime); outline-offset: 3px; }
+    .control-record { border-color: rgba(255, 144, 109, .5); color: #ffad91; }
+    .control-record.is-active { background: var(--orange); border-color: var(--orange); color: var(--ink); }
+    .control-play { background: var(--lime); border-color: var(--lime); color: var(--ink); }
+    .control-stop { color: var(--muted); }
+    .status-line { display: flex; align-items: center; gap: 8px; padding: 10px 16px; color: var(--muted); font-size: 12px; border-bottom: 1px solid var(--line); }
+    .status-indicator { width: 7px; height: 7px; border-radius: 50%; background: var(--mint); }
+    .status-indicator.recording { background: var(--orange); animation: blink 1s steps(2, start) infinite; }
+    .status-indicator.playing { background: var(--lime); }
+    .status-right { margin-left: auto; font-family: var(--mono); }
+    .work-area { display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(250px, .82fr); }
+    .action-panel { min-width: 0; padding: 17px; border-right: 1px solid var(--line); }
+    .panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .panel-head h3 { margin: 0; font: 600 13px var(--display); }
+    .panel-head span { color: var(--muted); font: 11px var(--mono); }
+    .action-list { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
+    .action-row { display: grid; grid-template-columns: 28px minmax(74px, .45fr) minmax(0, 1fr) auto; align-items: center; gap: 9px; min-height: 48px; padding: 7px 9px; border: 1px solid var(--line); border-radius: 6px; background: rgba(255,255,255,.025); transition: border-color .18s ease, background .18s ease; }
+    .action-row.current { border-color: var(--lime); background: rgba(197, 243, 106, .08); }
+    .action-number { color: var(--muted); font: 11px var(--mono); }
+    .action-kind { color: var(--mint); font-size: 11px; font-weight: 700; }
+    .action-detail { width: 100%; min-width: 0; padding: 5px 7px; border: 1px solid transparent; border-radius: 4px; background: transparent; color: var(--paper); font-size: 12px; }
+    .action-detail:hover { border-color: var(--line); }
+    .row-tools { display: flex; gap: 2px; }
+    .icon-btn { width: 27px; height: 27px; border: 0; border-radius: 4px; background: transparent; color: var(--muted); }
+    .icon-btn:hover { background: var(--ink-raised); color: var(--paper); }
+    .add-form { display: grid; grid-template-columns: minmax(110px, .55fr) minmax(0, 1fr) auto; gap: 7px; margin-top: 12px; }
+    .add-form select, .add-form input { min-width: 0; min-height: 37px; padding: 7px 9px; border: 1px solid var(--line); border-radius: 5px; background: var(--ink-soft); color: var(--paper); font-size: 12px; }
+    .add-form input::placeholder { color: #89988d; }
+    .add-btn { min-height: 37px; padding: 7px 12px; border: 0; border-radius: 5px; background: var(--ink-raised); color: var(--lime); font-size: 12px; font-weight: 700; }
+    .add-btn:hover { background: #334a3b; }
+    .preview-panel { min-width: 0; padding: 17px; background: #17241c; }
+    .preview-window { margin-top: 12px; overflow: hidden; border: 1px solid rgba(232,244,232,.19); border-radius: 6px; background: #e8eee7; color: #17241c; }
+    .preview-bar { display: flex; align-items: center; gap: 6px; padding: 8px 10px; background: #d3ded4; }
+    .preview-bar i { width: 6px; height: 6px; border-radius: 50%; background: #96a698; }
+    .preview-address { height: 8px; width: 43%; margin: 0 auto; border-radius: 8px; background: #b9c7ba; }
+    .preview-content { min-height: 180px; padding: 16px; }
+    .preview-app { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; font: 700 12px var(--display); }
+    .preview-logo { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 5px; background: #315840; color: var(--lime); font: 700 12px var(--display); }
+    .preview-copy { margin: 0 0 10px; color: #405245; font-size: 11px; }
+    .preview-task { display: grid; gap: 7px; }
+    .preview-task div { height: 22px; display: flex; align-items: center; gap: 7px; padding: 0 8px; border: 1px solid #cbd7cb; border-radius: 4px; background: #f7faf6; color: #344a39; font: 10px var(--mono); }
+    .preview-task b { color: #43875c; font-size: 10px; }
+    .preview-task div.is-current { border-color: #74a35e; background: #e7f2dd; }
+    .preview-footer { display: flex; justify-content: space-between; gap: 10px; padding: 9px 11px; background: #d3ded4; color: #526456; font: 10px var(--mono); }
+    .run-track { height: 3px; background: #33483a; }
+    .run-progress { height: 100%; width: 0; background: var(--lime); transition: width .3s ease; }
+    .logline { min-height: 37px; padding: 10px 16px; color: #a8b8aa; font: 10px var(--mono); border-top: 1px solid var(--line); }
+    .logline strong { color: var(--mint); font-weight: 500; }
+    .safety { display: flex; align-items: center; gap: 11px; margin: 12px 0 0; color: #aab9ad; font-size: 12px; }
+    .safety-mark { flex: 0 0 18px; width: 18px; height: 18px; display: grid; place-items: center; border: 1px solid rgba(197,243,106,.65); border-radius: 50%; color: var(--lime); font: 700 11px var(--mono); }
+    .below { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 24px; padding: 38px 0 0; }
+    .below h2 { margin: 0 0 5px; font: 600 22px var(--display); }
+    .below p { max-width: 640px; margin: 0; color: var(--muted); font-size: 13px; }
+    .download-link { display: inline-flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 6px; background: var(--lime); color: var(--ink); font-size: 13px; font-weight: 700; text-decoration: none; }
+    .download-link:hover { background: #d4fa8b; }
+    .download-link span { font: 18px var(--sans); }
+    .footnote { margin-top: 35px; padding-top: 14px; border-top: 1px solid var(--line); color: #829387; font-size: 11px; }
+    @keyframes blink { to { opacity: .35; } }
+    @keyframes arrive { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .hero, .section-heading, .simulator, .below { animation: arrive .55s ease both; }
+    .simulator { animation-delay: .08s; }
+    @media (max-width: 850px) {
+      .page { padding: 0 22px 40px; }
+      .hero { grid-template-columns: 1fr; gap: 25px; padding: 42px 0; }
+      h1 { max-width: 650px; font-size: 46px; }
+      .hero-copy { max-width: 650px; }
+    }
+    @media (max-width: 620px) {
+      .page { padding: 0 15px 32px; }
+      .topbar { height: 64px; }
+      .top-link { font-size: 12px; }
+      .hero { padding: 32px 0; }
+      h1 { font-size: 39px; }
+      .hero-copy { font-size: 15px; }
+      .section-heading { align-items: start; flex-direction: column; gap: 8px; }
+      .work-area { grid-template-columns: 1fr; }
+      .action-panel { border-right: 0; border-bottom: 1px solid var(--line); padding: 13px; }
+      .preview-panel { padding: 13px; }
+      .action-row { grid-template-columns: 22px 64px minmax(0,1fr) auto; gap: 5px; padding: 6px; }
+      .action-kind { font-size: 10px; }
+      .action-detail { font-size: 11px; padding: 5px 4px; }
+      .row-tools .icon-btn { width: 23px; }
+      .add-form { grid-template-columns: 1fr 1fr; }
+      .add-form input { grid-column: 1 / -1; grid-row: 2; }
+      .add-btn { grid-column: 2; grid-row: 1; }
+      .sim-toolbar { align-items: flex-start; flex-direction: column; }
+      .toolbar-actions { width: 100%; }
+      .control { flex: 1; padding-inline: 8px; }
+      .below { grid-template-columns: 1fr; gap: 16px; }
+      .download-link { justify-content: center; }
+      .video-caption { font-size: 10px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <a class="brand" href="#inicio" aria-label="Macro Studio, inicio"><span class="brand-mark" aria-hidden="true">M</span><span class="brand-name">Macro Studio</span></a>
+      <a class="top-link" href="https://oiasusqkslsk.lemonsqueezy.com/checkout">Ir a la tienda <span aria-hidden="true">↗</span></a>
+    </header>
+
+    <section class="hero" id="inicio" aria-labelledby="hero-title">
+      <div>
+        <div class="eyebrow">Automatización para Windows</div>
+        <h1 id="hero-title">Menos tareas repetidas.<br><span>Más tiempo para ti.</span></h1>
+        <p class="hero-copy">Graba acciones, ordénalas en un editor visual y reproduce tus flujos cuando los necesites. Empieza con esta pequeña prueba interactiva.</p>
+        <div class="hero-actions">
+          <a class="store-cta" href="https://oiasusqkslsk.lemonsqueezy.com/checkout">Comprar Macro Studio <span aria-hidden="true">↗</span></a>
+          <a class="demo-link" href="#prueba">Probar la demo ↓</a>
+        </div>
+        <p class="hero-note"><span class="note-dot" aria-hidden="true"></span><span>Esta página simula Macro Studio. No controla el ratón, el teclado ni las aplicaciones de tu computadora.</span></p>
+      </div>
+      <figure class="video-frame">
+        <video id="demo-video" controls preload="metadata" poster="Designer%20(16).png" aria-label="Video de demostración de Macro Studio">
+          <source src="Video%20Project%203.mp4" type="video/mp4">
+        </video>
+        <img id="video-still" class="video-still" src="Designer%20(16).png" alt="Captura de la interfaz de Macro Studio" hidden>
+        <figcaption class="video-caption"><strong>Macro Studio en acción</strong><a id="video-link" href="Video%20Project%203.mp4">Abrir video</a></figcaption>
+      </figure>
+    </section>
+
+    <section id="prueba" aria-labelledby="demo-title">
+      <div class="section-heading">
+        <div><h2 id="demo-title">Prueba el flujo</h2><p>Añade, ordena y reproduce pasos de ejemplo.</p></div>
+        <span class="demo-label">Simulación en navegador</span>
+      </div>
+      <div class="simulator" aria-label="Simulador interactivo de Macro Studio">
+        <div class="sim-toolbar">
+          <div class="sim-title"><span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span> Macro Studio <span style="color:var(--muted);font:11px var(--mono)">· flujo de ejemplo</span></div>
+          <div class="toolbar-actions">
+            <button class="control control-record" id="record-btn" type="button">● Grabar</button>
+            <button class="control control-stop" id="stop-btn" type="button">■ Detener</button>
+            <button class="control control-play" id="play-btn" type="button">▶ Reproducir</button>
+            <button class="control" id="reset-btn" type="button">Reiniciar</button>
+          </div>
+        </div>
+        <div class="status-line" role="status" aria-live="polite"><span class="status-indicator" id="status-indicator"></span><span id="status-text">Listo para probar</span><span class="status-right" id="step-counter">4 acciones</span></div>
+        <div class="run-track" aria-hidden="true"><div class="run-progress" id="run-progress"></div></div>
+        <div class="work-area">
+          <div class="action-panel">
+            <div class="panel-head"><h3>Editor visual de acciones</h3><span id="duration-label">DURACIÓN 2.4 S</span></div>
+            <ol class="action-list" id="action-list" aria-label="Acciones de la macro"></ol>
+            <form class="add-form" id="add-form">
+              <select id="action-type" aria-label="Tipo de acción"><option value="Clic">Clic</option><option value="Texto">Texto</option><option value="Pausa">Pausa</option><option value="Atajo">Atajo</option><option value="Imagen">Esperar imagen</option></select>
+              <input id="action-detail" type="text" maxlength="80" placeholder="Describe el paso" aria-label="Detalle de la acción">
+              <button class="add-btn" type="submit">+ Añadir</button>
+            </form>
+          </div>
+          <div class="preview-panel">
+            <div class="panel-head"><h3>Vista previa del flujo</h3><span>LOCAL</span></div>
+            <div class="preview-window" aria-label="Previsualización ilustrativa del flujo">
+              <div class="preview-bar"><i></i><i></i><i></i><span class="preview-address"></span></div>
+              <div class="preview-content"><div class="preview-app"><span class="preview-logo">M</span> Macro Studio</div><p class="preview-copy">Acciones de esta macro</p><div class="preview-task" id="preview-task"></div></div>
+              <div class="preview-footer"><span>SIMULACIÓN</span><span id="preview-count">4 PASOS</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="logline" id="logline"><strong>09:41:02</strong> · Listo. La simulación no ejecuta acciones fuera de esta página.</div>
+      </div>
+      <p class="safety"><span class="safety-mark" aria-hidden="true">i</span>En Macro Studio para Windows, pulsa Esc para detener una grabación o reproducción. En esta prueba, Esc también cancela la simulación.</p>
+    </section>
+
+    <section class="below" aria-label="Descarga del producto">
+      <div><h2>¿Quieres probar el programa completo?</h2><p>Macro Studio para Windows incluye grabación de teclado y ratón, editor visual, pausas, hotkeys, acciones por imagen y reproducción configurable.</p></div>
+      <a class="download-link" href="https://oiasusqkslsk.lemonsqueezy.com/checkout">Comprar en Lemon Squeezy <span aria-hidden="true">↗</span></a>
+    </section>
+    <footer class="footnote">Prueba demostrativa. Las acciones se mantienen solo en esta página y no se envían a aplicaciones del sistema.</footer>
+  </main>
+
+  <script>
+    (() => {
+      const initialActions = [
+        { type: 'Clic', detail: 'Abrir el documento' },
+        { type: 'Pausa', detail: 'Esperar 0.8 segundos' },
+        { type: 'Texto', detail: 'Escribir: Reporte semanal' },
+        { type: 'Atajo', detail: 'Guardar · Ctrl + S' }
+      ];
+      let actions = initialActions.map(action => ({ ...action }));
+      let recording = false;
+      let playing = false;
+      let playTimer = null;
+      let currentStep = -1;
+      let recordStarted = 0;
+      let recordTimer = null;
+      const list = document.querySelector('#action-list');
+      const preview = document.querySelector('#preview-task');
+      const statusText = document.querySelector('#status-text');
+      const statusIndicator = document.querySelector('#status-indicator');
+      const logline = document.querySelector('#logline');
+      const demoVideo = document.querySelector('#demo-video');
+      const videoSource = demoVideo.querySelector('source');
+      const videoLink = document.querySelector('#video-link');
+      let usingFallbackVideo = false;
+      videoSource.addEventListener('error', () => {
+        if (!usingFallbackVideo) {
+          usingFallbackVideo = true;
+          videoSource.src = 'Demo_Macro_Studio.mp4';
+          videoLink.href = 'Demo_Macro_Studio.mp4';
+          demoVideo.load();
+          return;
+        }
+        demoVideo.hidden = true;
+        document.querySelector('#video-still').hidden = false;
+      });
+
+      function log(message) {
+        const now = new Date();
+        const time = [now.getHours(), now.getMinutes(), now.getSeconds()].map(value => String(value).padStart(2, '0')).join(':');
+        logline.innerHTML = `<strong>${time}</strong> · ${message}`;
+      }
+
+      function render() {
+        list.replaceChildren();
+        preview.replaceChildren();
+        actions.forEach((action, index) => {
+          const row = document.createElement('li');
+          row.className = `action-row${currentStep === index ? ' current' : ''}`;
+          const number = document.createElement('span');
+          number.className = 'action-number';
+          number.textContent = String(index + 1).padStart(2, '0');
+          const kind = document.createElement('span');
+          kind.className = 'action-kind';
+          kind.textContent = action.type;
+          const detail = document.createElement('input');
+          detail.className = 'action-detail';
+          detail.value = action.detail;
+          detail.setAttribute('aria-label', `Detalle de acción ${index + 1}`);
+          detail.addEventListener('input', () => { actions[index].detail = detail.value; renderPreview(); });
+          const tools = document.createElement('span');
+          tools.className = 'row-tools';
+          const up = makeToolButton('↑', `Mover acción ${index + 1} arriba`, () => moveAction(index, -1), index === 0);
+          const down = makeToolButton('↓', `Mover acción ${index + 1} abajo`, () => moveAction(index, 1), index === actions.length - 1);
+          const remove = makeToolButton('×', `Eliminar acción ${index + 1}`, () => {
+            actions.splice(index, 1); currentStep = -1; render(); log('Acción eliminada de la simulación.');
+          });
+          tools.append(up, down, remove);
+          row.append(number, kind, detail, tools);
+          list.append(row);
+
+          const previewRow = document.createElement('div');
+          previewRow.classList.toggle('is-current', currentStep === index);
+          const check = document.createElement('b');
+          check.textContent = currentStep > index ? '✓' : '·';
+          const label = document.createElement('span');
+          label.textContent = `${action.type}: ${action.detail || 'Sin detalle'}`;
+          previewRow.append(check, label);
+          preview.append(previewRow);
+        });
+        document.querySelector('#step-counter').textContent = `${actions.length} ${actions.length === 1 ? 'acción' : 'acciones'}`;
+        document.querySelector('#preview-count').textContent = `${actions.length} ${actions.length === 1 ? 'PASO' : 'PASOS'}`;
+        document.querySelector('#duration-label').textContent = `DURACIÓN ${(actions.length * .6).toFixed(1)} S`;
+      }
+
+      function renderPreview() {
+        [...preview.children].forEach((row, index) => {
+          const label = row.querySelector('span');
+          if (label) label.textContent = `${actions[index].type}: ${actions[index].detail || 'Sin detalle'}`;
+        });
+      }
+
+      function makeToolButton(symbol, label, onClick, disabled = false) {
+        const button = document.createElement('button');
+        button.type = 'button'; button.className = 'icon-btn'; button.textContent = symbol;
+        button.title = label; button.setAttribute('aria-label', label); button.disabled = disabled;
+        if (disabled) button.style.opacity = '.35';
+        button.addEventListener('click', onClick);
+        return button;
+      }
+
+      function moveAction(index, offset) {
+        const target = index + offset;
+        if (target < 0 || target >= actions.length) return;
+        [actions[index], actions[target]] = [actions[target], actions[index]];
+        currentStep = -1; render(); log('Orden de acciones actualizado.');
+      }
+
+      function setStatus(label, state = '') {
+        statusText.textContent = label;
+        statusIndicator.className = `status-indicator ${state}`.trim();
+      }
+
+      function stopAll(message = 'Simulación detenida.') {
+        recording = false; playing = false;
+        clearInterval(playTimer); clearInterval(recordTimer); currentStep = -1;
+        document.querySelector('#record-btn').classList.remove('is-active');
+        document.querySelector('#run-progress').style.width = '0%';
+        setStatus('Listo para probar'); render(); log(message);
+      }
+
+      document.querySelector('#record-btn').addEventListener('click', () => {
+        if (playing) stopAll('Reproducción detenida antes de grabar.');
+        recording = !recording;
+        document.querySelector('#record-btn').classList.toggle('is-active', recording);
+        if (recording) {
+          recordStarted = Date.now(); setStatus('Grabando en modo de prueba', 'recording');
+          log('Grabación simulada iniciada. Añade acciones con el formulario.');
+          clearInterval(recordTimer);
+          recordTimer = setInterval(() => {
+            const elapsed = ((Date.now() - recordStarted) / 1000).toFixed(1);
+            document.querySelector('#duration-label').textContent = `GRABANDO ${elapsed} S`;
+          }, 200);
+        } else {
+          clearInterval(recordTimer); setStatus('Grabación de prueba detenida');
+          log('Grabación simulada detenida. Revisa los pasos antes de reproducir.'); render();
+        }
+      });
+
+      document.querySelector('#stop-btn').addEventListener('click', () => stopAll());
+      document.querySelector('#reset-btn').addEventListener('click', () => {
+        stopAll('Flujo de ejemplo restaurado.'); actions = initialActions.map(action => ({ ...action })); render();
+      });
+      document.querySelector('#play-btn').addEventListener('click', () => {
+        if (!actions.length || playing) return;
+        if (recording) { recording = false; clearInterval(recordTimer); document.querySelector('#record-btn').classList.remove('is-active'); }
+        playing = true; currentStep = 0; setStatus('Reproducción simulada', 'playing');
+        log('Reproducción de vista previa iniciada. No se ejecutan acciones del sistema.');
+        const advance = () => {
+          const percent = Math.round(((currentStep + 1) / actions.length) * 100);
+          document.querySelector('#run-progress').style.width = `${percent}%`; render();
+          if (currentStep >= actions.length - 1) {
+            clearInterval(playTimer); playing = false; currentStep = -1;
+            setStatus('Vista previa completada');
+            log('Vista previa terminada. El flujo no interactuó con otras aplicaciones.');
+            setTimeout(() => { document.querySelector('#run-progress').style.width = '0%'; }, 500);
+            return;
+          }
+          currentStep += 1;
+        };
+        advance(); playTimer = setInterval(advance, 700);
+      });
+
+      document.querySelector('#add-form').addEventListener('submit', event => {
+        event.preventDefault();
+        const type = document.querySelector('#action-type').value;
+        const input = document.querySelector('#action-detail');
+        const defaults = { Clic: 'Clic de ejemplo', Texto: 'Escribir texto de ejemplo', Pausa: 'Esperar 1 segundo', Atajo: 'Ctrl + S', Imagen: 'Esperar una imagen' };
+        const detail = input.value.trim() || defaults[type];
+        actions.push({ type, detail }); input.value = ''; currentStep = -1; render();
+        log(`Acción “${type}” añadida a la simulación.`);
+      });
+
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && (recording || playing)) stopAll('Cancelado con Esc.');
+      });
+      render();
+    })();
+  </script>
+</body>
+</html>
